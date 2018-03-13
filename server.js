@@ -7,7 +7,6 @@ if (env !== 'production') {
 }
 
 var router = require('./app/routes/html-routes.js');
-var db = require("./app/models");
 
 var app = express();
 var env = process.env.NODE_ENV || 'development';
@@ -21,5 +20,5 @@ app.use(logger("dev"));
 
 // Start express app
 app.listen(PORT, function(err){
-        err ? console.log(err) : console.log("Express App Started");
+        err ? console.log(err) : console.log("Express App Started on Port: " + PORT);
 });

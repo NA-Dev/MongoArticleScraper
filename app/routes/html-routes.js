@@ -6,6 +6,8 @@ router.get('/', function (req, res) {
     res.render('index');
 });
 
+router.get('/scrape', controller.scrape);
+
 // 2. At the "/all" path, display every entry in the animals collection
 router.get("/all", function (req, res) {
     // Query: In our database, go to the animals collection, then "find" everything
