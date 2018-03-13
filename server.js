@@ -15,11 +15,11 @@ var PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
-app.use('/', routes);
+app.use('/', router);
 app.set('view engine', 'ejs');
 app.use(logger("dev"));
 
 // Start express app
 app.listen(PORT, function(err){
-        err ? console.log(err) : console.log("Express App Started";
+        err ? console.log(err) : console.log("Express App Started");
 });
