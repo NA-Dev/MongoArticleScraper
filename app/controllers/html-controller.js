@@ -1,42 +1,78 @@
-var axios = require("axios");
+var request = require("request");
 var cheerio = require("cheerio");
 var db = require("../models");
+// var mongojs = require("mongojs");
+var moment = require("moment");
 
 function scrape(req, res) {
-    axios.get("http://www.echojs.com/")
-    .then(function(response) {
-        // Then, we load that into cheerio and save it to $ for a shorthand selector
-        var $ = cheerio.load(response.data);
-    
-        // Now, we grab every h2 within an article tag, and do the following:
-        $("article h2").each(function(i, element) {
-          // Save an empty result object
-          var result = {};
-    
-          // Add the text and href of every link, and save them as properties of the result object
-          result.title = $(this)
-            .children("a")
-            .text();
-          result.link = $(this)
-            .children("a")
-            .attr("href");
-    
-          // Create a new Article using the `result` object built from scraping
-          db.Article.create(result)
-            .then(function(dbArticle) {
-              // View the added result in the console
-              console.log(dbArticle);
-            })
-            .catch(function(err) {
-              // If an error occurred, send it to the client
-              return res.json(err);
-            });
+    request("http://www.echojs.com/", function (error, response, body) {
+        var $ = cheerio.load(body);
+
+        $("article h2").each(function (i, element) {
+            var result = {};
+
+            result.title = $(this)
+                .children("a")
+                .text();
+            result.link = $(this)
+                .children("a")
+                .attr("href");
+
+            db.Article.create(result)
+                .then(function (dbArticle) {
+                    console.log(dbArticle);
+                })
+                .catch(function (err) {
+                    return res.json(err);
+                });
         });
-    
-        // If we were able to successfully scrape and save an Article, send a message to the client
+
         res.send("Scrape Complete");
-      });
+    });
 }
+
+function all(req, res) {
+    db.Article.find({})
+        .populate("notes")
+        .then(function (found) {
+            res.render("index", {              
+                moment,
+                articles: found
+            });
+        })
+        .catch(function (err) {
+            console.log(error);
+        });
+}
+
+function addNote(req, res) {
+    db.Note.create(req.body)
+        .then(function (dbNote) {
+            return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { notes: dbNote._id } }, { new: true });
+        })
+        .then(function (dbArticle) {
+            // If the User was updated successfully, send it back to the client
+            res.redirect("/#" + req.params.id);
+        })
+        .catch(function (err) {
+            // If an error occurs, send it back to the client
+            console.log(err);
+        });
+}
+
+function deleteNote(req, res) {
+    db.Note.remove({
+        _id: req.params.noteID
+    })
+    .then( function (deleted) {
+            console.log("Note deleted");
+            res.redirect("/#" + req.params.id);
+    })
+    .catch(function(err) {
+        console.log(error);
+    });
+}
+
 module.exports = {
-    scrape
+    scrape, all, addNote, deleteNote
 };
