@@ -27,21 +27,31 @@ function scrape(req, res) {
                 });
         });
 
-        res.send("Scrape Complete");
+        res.redirect("/");
     });
 }
 
 function all(req, res) {
+    var perPage = 9;
+    var page = req.params.page || 1;
+
     db.Article.find({})
         .populate("notes")
-        .then(function (found) {
-            res.render("index", {              
-                moment,
-                articles: found
-            });
-        })
-        .catch(function (err) {
-            console.log(error);
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .exec(function(err, articles) {
+            if (err) {console.log(err);}
+            db.Article
+                .count()
+                .exec(function(err, count) {
+                    if (err) {console.log(err)}
+                    res.render("index", {              
+                        moment,
+                        articles,
+                        current: page,
+                        pages: Math.ceil(count / perPage)
+                    });
+                });
         });
 }
 
