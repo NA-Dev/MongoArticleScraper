@@ -8,7 +8,7 @@
                 </h6>
                 <p><%= note.body %></p>
                 <form action='/articles/<%= article._id %>/notes/<%= note._id %>?method=delete' method="POST">
-                    <input class="float-right btn btn-link" type="submit"><i class="far fa-trash-alt ml-3 mr-3"></i></input>
+                    <button class="float-right btn btn-link" type="submit"><i class="far fa-trash-alt ml-3 mr-3"></i></button>
                 </form>
             </div>
         </div>
@@ -27,7 +27,7 @@
                 <label for="body">Full Comment:</label>
                 <textarea class="form-control" name="body" id="body" rows="3" placeholder="Seriously, this one is worth reading"></textarea>
             </div>
-            <input type="submit" class="btn btn-primary"></input>
+            <input type="submit" class="float-right btn btn-primary"></input>
         </form>
         
     </div>
