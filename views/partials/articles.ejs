@@ -1,4 +1,9 @@
 <% if( articles.length > 0) { %>
+    <a class="btn-link" href="/scrape">
+        <p class="text-right">
+                Scrape new articles...
+        </p>
+    </a>
     <div id="accordion" class="mb-3">
         <% articles.map(function(article, i) { %>
             <div class="card mb-3">
@@ -27,8 +32,8 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <p>Retrieval Date: <%= article.date %></p>
                                     <p><%= article.description %></p>
+                                    <p>Retrieval Date: <%= article.date %></p>
                                 </div> 
                         </div>
                         <div class="row">

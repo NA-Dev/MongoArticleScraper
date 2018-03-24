@@ -4,13 +4,14 @@ var db = require("../models");
 var moment = require("moment");
 
 function scrape(req, res) {
-    var url = "http://www.inventorspot.com/news";
-    request(url, function (error, response, body) {   
+    var url = "http://www.inventorspot.com";
+    request(url + "/news", function (error, response, body) {   
         if (error) {
             res.send(500, {error});
 
         } else {
             var $ = cheerio.load(body);
+            var results = [];
     
             $(".ntype-blog-2").each(function (i, element) {
                 var result = {};
@@ -29,17 +30,20 @@ function scrape(req, res) {
                 result.description = $(this)
                     .find(".KonaBody")
                     .text();
-                         
-                db.Article.create(result)
-                .then(function (dbArticle) {
-                    console.log(dbArticle);
-                })
-                .catch(function (err) {
-                    console.log(err);
-                });
 
+                results.push(result);
                 return i < 19;
             });   
+                         
+            db.Article.create(
+                results
+            )
+            .then(function (dbArticle) {
+                console.log(dbArticle);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
         }
 
         res.redirect("/");
@@ -54,6 +58,9 @@ function all(req, res) {
         .populate("notes")
         .skip((perPage * page) - perPage)
         .limit(perPage)
+        .sort({
+            date: 1
+        })
         .exec(function(err, articles) {
             if (err) {console.log(err);}
             db.Article
