@@ -12,14 +12,24 @@ body {
     color: rgb(255, 102, 102);
 }
 
-.btn-primary {
-    background-color: rgba(191, 64, 64, 0.65);
+.btn-primary, 
+.page-link {
+    background-color: rgba(191, 64, 64, 0.65) !important;
     border-color: rgba(255, 102, 102, 0.65);
+    color: beige;
 }
 
 .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
-    background-color: rgba(255, 102, 102, 0.65) !important;
+    background-color: rgba(255, 102, 102, 0.65) ;
     border-color: rgba(191, 64, 64, 0.65);
+}
+
+.page-link > li > a:active,
+.page-link > li > a:hover, 
+.page-link > li > a:focus {
+    color: beige;
+    background-color: rgba(255, 102, 102, 0.65);
+    border-color: rgba(255, 102, 102, 0.65);
 }
 
 .card {
