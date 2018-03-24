@@ -1,31 +1,46 @@
 var request = require("request");
 var cheerio = require("cheerio");
 var db = require("../models");
-// var mongojs = require("mongojs");
 var moment = require("moment");
 
 function scrape(req, res) {
-    request("http://www.echojs.com/", function (error, response, body) {
-        var $ = cheerio.load(body);
+    var url = "http://www.inventorspot.com/news";
+    request(url, function (error, response, body) {   
+        if (error) {
+            res.send(500, {error});
 
-        $("article h2").each(function (i, element) {
-            var result = {};
-
-            result.title = $(this)
-                .children("a")
-                .text();
-            result.link = $(this)
-                .children("a")
-                .attr("href");
-
-            db.Article.create(result)
+        } else {
+            var $ = cheerio.load(body);
+    
+            $(".ntype-blog-2").each(function (i, element) {
+                var result = {};
+    
+                result.title = $(this)
+                    .children("h2")
+                    .text();
+                result.link = url + $(this)
+                    .children("h2")
+                    .children("a")
+                    .attr("href");
+                result.date = moment().format("MMM-DD-YYYY");
+                result.img = $(this)
+                    .find("img")
+                    .attr("src");
+                result.description = $(this)
+                    .find(".KonaBody")
+                    .text();
+                         
+                db.Article.create(result)
                 .then(function (dbArticle) {
                     console.log(dbArticle);
                 })
                 .catch(function (err) {
-                    return res.json(err);
+                    console.log(err);
                 });
-        });
+
+                return i < 19;
+            });   
+        }
 
         res.redirect("/");
     });

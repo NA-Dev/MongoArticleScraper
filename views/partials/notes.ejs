@@ -1,15 +1,22 @@
 <% if( article.notes.length > 0) { %>
     <% article.notes.map(function(note, i) { %>
-        <div class="card">
-            <h5 class="card-header"><%= note.title %></h5>
+        <div class="card mt-3">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col">
+                        <h5>Comment: <%= note.title %></h5>
+                    </div>
+                    <form class="col-sm col-sm-auto" action='/articles/<%= article._id %>/notes/<%= note._id %>?method=delete' method="POST">
+                        <button class="btn btn-link" type="submit"><i class="far fa-trash-alt ml-3 mr-3"></i></button>
+                    </form>
+                </div>
+            </div>
             <div class="card-body">
                 <h6 class="card-subtitle mb-2 text-muted">
                     <%= moment(note.date).format("ddd, MMM DD, YYYY, HH:mma") %>
                 </h6>
                 <p><%= note.body %></p>
-                <form action='/articles/<%= article._id %>/notes/<%= note._id %>?method=delete' method="POST">
-                    <button class="float-right btn btn-link" type="submit"><i class="far fa-trash-alt ml-3 mr-3"></i></button>
-                </form>
+
             </div>
         </div>
     <% }); %>
@@ -29,6 +36,5 @@
             </div>
             <input type="submit" class="float-right btn btn-primary"></input>
         </form>
-        
     </div>
 </div>

@@ -17,6 +17,18 @@ var ArticleSchema = new Schema({
     type: String,
     required: true
   },
+  date: {
+    type: String,
+    required: true
+  },
+  img: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
   notes: [{
     type: Schema.Types.ObjectId,
       // The ObjectIds will refer to the ids in the Note model
